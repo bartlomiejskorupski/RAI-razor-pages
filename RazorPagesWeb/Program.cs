@@ -7,6 +7,7 @@ using RazorPagesLibrary.Model;
 using RazorPagesWeb;
 using RazorPagesWeb.Data;
 using RazorPagesWeb.Services;
+using SendGrid.Helpers.Mail;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,13 +56,20 @@ app.MapRazorPages();
 
 app.MapGet("/api/water", [AllowAnonymous](ApplicationDbContext db) =>
 {
-    var waters = db.Waters
-        .Include(w => w.Type)
-        .Include(w => w.Manufacturer)
-        .Include(w => w.Packaging)
-        .Include(w => w.Ions);
+    var waters = db.Waters.Include(w => w.Type).Include(w => w.Manufacturer).Include(w => w.Packaging).Include(w => w.Ions);
+    var pallets = db.Pallets.Include(p => p.Delivery).Include(p => p.Water).ToList();
+    var units = db.SaleUnits.Include(p => p.Sale).Include(p => p.Water).ToList();
 
-    return waters.Select(w => GetWaterResponse.FromWater(w));
+    var response = new List<GetWaterResponse>();
+    foreach (var w in waters)
+    {
+        var fromPallets = pallets.Where(p => p.WaterId == w.Id)
+            .Aggregate(0, (acc, pal) => acc + pal.Count * pal.Delivery.ItemsPerPallet);
+        var sold = units.Where(p => p.WaterId == w.Id)
+            .Aggregate(0, (acc, u) => acc + u.Count);
+        response.Add(GetWaterResponse.FromWater(w, fromPallets - sold));
+    }
+    return response;
 
 }).WithName("Get Products");
 

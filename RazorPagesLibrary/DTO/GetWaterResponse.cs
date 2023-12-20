@@ -16,8 +16,9 @@ public class GetWaterResponse
     public string Packaging { get; set; } = null!;
     public string Picture { get; set; } = null!;
     public string Mineralization { get; set; } = null!;
+    public int Stock {  get; set; }
 
-    public static GetWaterResponse FromWater(Water water)
+    public static GetWaterResponse FromWater(Water water, int stock)
     {
         return new GetWaterResponse() 
         { 
@@ -29,6 +30,7 @@ public class GetWaterResponse
             Packaging = water.Packaging.DisplayName,
             Picture = water.Picture,
             Mineralization = water.Mineralization,
+            Stock = stock
         };
     }
 
