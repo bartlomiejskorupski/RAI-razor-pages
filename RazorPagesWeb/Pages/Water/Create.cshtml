@@ -1,0 +1,67 @@
+﻿@page
+@model RazorPagesWeb.Pages.Water.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Water</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Water.Name" class="control-label"></label>
+                <input asp-for="Water.Name" class="form-control" />
+                <span asp-validation-for="Water.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Water.TypeID" class="control-label"></label>
+                <select asp-for="Water.TypeID" class ="form-control" asp-items="ViewBag.TypeID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Water.ManufacturerID" class="control-label"></label>
+                <select asp-for="Water.ManufacturerID" class ="form-control" asp-items="ViewBag.ManufacturerID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Water.pH" class="control-label"></label>
+                <input 
+                    asp-for="Water.pH"
+                    value="7"
+                    type="number"
+                    step="0.1"
+                    min="5"
+                    max="9"
+                    class="form-control" />
+                <span asp-validation-for="Water.pH" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IonIds" class="control-label"></label>
+                <select asp-for="IonIds" class="form-control" asp-items="ViewBag.Ions" multiple></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Water.PackagingID" class="control-label"></label>
+                <select asp-for="Water.PackagingID" class ="form-control" asp-items="ViewBag.PackagingID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Water.Picture" class="control-label"></label>
+                <input asp-for="Water.Picture" class="form-control" />
+                <span asp-validation-for="Water.Picture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

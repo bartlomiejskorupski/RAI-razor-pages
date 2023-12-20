@@ -1,0 +1,72 @@
+﻿@page
+@model RazorPagesWeb.Pages.Water.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Waters</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Water[0].Picture)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Water[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Water[0].Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Water[0].Manufacturer.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Water[0].pH)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Water[0].Mineralization)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Water[0].Packaging)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Water) {
+        <tr>
+            <td>
+                <img src="@Html.DisplayFor(modelItem => item.Picture)" height="40"/>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Manufacturer.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.pH)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mineralization)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Packaging.DisplayName)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
