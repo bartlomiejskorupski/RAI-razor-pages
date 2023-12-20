@@ -62,9 +62,15 @@
                 @Html.DisplayFor(modelItem => item.Packaging.DisplayName)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                @if(User?.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                }
+                | <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                @if (User?.Identity?.IsAuthenticated == true)
+                {   
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                }
             </td>
         </tr>
 }

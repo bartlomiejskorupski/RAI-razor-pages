@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using RazorPagesLibrary.Model;
 using RazorPagesWeb.Data;
 
-namespace RazorPagesWeb.Pages.Ion
+namespace RazorPagesWeb.Pages.SaleUnit
 {
     public class EditModel : PageModel
     {
@@ -24,7 +21,7 @@ namespace RazorPagesWeb.Pages.Ion
         }
 
         [BindProperty]
-        public RazorPagesLibrary.Model.Ion Ion { get; set; } = default!;
+        public RazorPagesLibrary.Model.SaleUnit SaleUnit { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -33,40 +30,21 @@ namespace RazorPagesWeb.Pages.Ion
                 return NotFound();
             }
 
-            var ion =  await _context.Ions.FirstOrDefaultAsync(m => m.Id == id);
-            if (ion == null)
+            var saleunit =  await _context.SaleUnits.FirstOrDefaultAsync(m => m.Id == id);
+            if (saleunit == null)
             {
                 return NotFound();
             }
-            Ion = ion;
-            try
-            {
-                ContentString = Ion.Content.ToString("0.000E0");
-            }catch
-            {
-
-            }
-
+            SaleUnit = saleunit;
+            ViewData["SaleId"] = new SelectList(_context.Sales, "Id", "DisplayName");
+            ViewData["WaterId"] = new SelectList(_context.Waters.Include(w => w.Type).Include(w => w.Packaging), "Id", "DisplayName");
             return Page();
         }
 
-        [BindProperty]
-        [RegularExpression(@"^[0-9]([,\.][0-9]{1,3}([eE][-\+]?[0-9]{1,3})?)?$", ErrorMessage = "Has to be in scientific notation.")]
-        [DisplayName("Content [g/l]")]
-        public string ContentString { get; set; }
-
         public async Task<IActionResult> OnPostAsync()
         {
-            try
-            {
-                Ion.Content = Double.Parse(ContentString, NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint);
-            }
-            catch
-            {
-                return Page();
-            }
 
-            _context.Attach(Ion).State = EntityState.Modified;
+            _context.Attach(SaleUnit).State = EntityState.Modified;
 
             try
             {
@@ -74,7 +52,7 @@ namespace RazorPagesWeb.Pages.Ion
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!IonExists(Ion.Id))
+                if (!SaleUnitExists(SaleUnit.Id))
                 {
                     return NotFound();
                 }
@@ -87,9 +65,9 @@ namespace RazorPagesWeb.Pages.Ion
             return RedirectToPage("./Index");
         }
 
-        private bool IonExists(int id)
+        private bool SaleUnitExists(int id)
         {
-            return _context.Ions.Any(e => e.Id == id);
+            return _context.SaleUnits.Any(e => e.Id == id);
         }
     }
 }

@@ -56,4 +56,6 @@ public class Water
             return "Highly mineralized";
         }
     }
+    [NotMapped]
+    public string DisplayName => $"{Name}, {Type?.Name}, {Packaging?.DisplayName}";
 }

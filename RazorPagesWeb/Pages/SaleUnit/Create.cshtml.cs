@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using RazorPagesLibrary.Model;
 using RazorPagesWeb.Data;
 
-namespace RazorPagesWeb.Pages.Ion
+namespace RazorPagesWeb.Pages.SaleUnit
 {
     public class CreateModel : PageModel
     {
@@ -24,29 +22,18 @@ namespace RazorPagesWeb.Pages.Ion
 
         public IActionResult OnGet()
         {
+            ViewData["SaleId"] = new SelectList(_context.Sales, "Id", "DisplayName");
+            ViewData["WaterId"] = new SelectList(_context.Waters.Include(w => w.Type).Include(w => w.Packaging), "Id", "DisplayName");
             return Page();
         }
 
         [BindProperty]
-        public RazorPagesLibrary.Model.Ion Ion { get; set; } = default!;
-
-        [BindProperty]
-        [RegularExpression(@"^[0-9]([,\.][0-9]{1,3}([eE][-\+]?[0-9]{1,3})?)?$", ErrorMessage = "Has to be in scientific notation.")]
-        [DisplayName("Content [g/l]")]
-        public string ContentString { get; set; }
+        public RazorPagesLibrary.Model.SaleUnit SaleUnit { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {
-            try
-            {
-                Ion.Content = Double.Parse(ContentString, NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
-            }
-            catch
-            {
-                return Page();
-            }
 
-            _context.Ions.Add(Ion);
+            _context.SaleUnits.Add(SaleUnit);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

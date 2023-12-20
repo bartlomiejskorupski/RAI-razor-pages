@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using RazorPagesLibrary.Model;
 using RazorPagesWeb.Data;
 
-namespace RazorPagesWeb.Pages.Ion
+namespace RazorPagesWeb.Pages.Pallet
 {
     public class EditModel : PageModel
     {
@@ -24,7 +21,7 @@ namespace RazorPagesWeb.Pages.Ion
         }
 
         [BindProperty]
-        public RazorPagesLibrary.Model.Ion Ion { get; set; } = default!;
+        public RazorPagesLibrary.Model.Pallet Pallet { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -33,40 +30,21 @@ namespace RazorPagesWeb.Pages.Ion
                 return NotFound();
             }
 
-            var ion =  await _context.Ions.FirstOrDefaultAsync(m => m.Id == id);
-            if (ion == null)
+            var pallet =  await _context.Pallets.FirstOrDefaultAsync(m => m.Id == id);
+            if (pallet == null)
             {
                 return NotFound();
             }
-            Ion = ion;
-            try
-            {
-                ContentString = Ion.Content.ToString("0.000E0");
-            }catch
-            {
-
-            }
-
+            Pallet = pallet;
+            ViewData["DeliveryId"] = new SelectList(_context.Deliveries.Include(d => d.Supplier), "Id", "DisplayName");
+            ViewData["WaterId"] = new SelectList(_context.Waters.Include(w => w.Type).Include(w => w.Packaging), "Id", "DisplayName");
             return Page();
         }
 
-        [BindProperty]
-        [RegularExpression(@"^[0-9]([,\.][0-9]{1,3}([eE][-\+]?[0-9]{1,3})?)?$", ErrorMessage = "Has to be in scientific notation.")]
-        [DisplayName("Content [g/l]")]
-        public string ContentString { get; set; }
-
         public async Task<IActionResult> OnPostAsync()
         {
-            try
-            {
-                Ion.Content = Double.Parse(ContentString, NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint);
-            }
-            catch
-            {
-                return Page();
-            }
 
-            _context.Attach(Ion).State = EntityState.Modified;
+            _context.Attach(Pallet).State = EntityState.Modified;
 
             try
             {
@@ -74,7 +52,7 @@ namespace RazorPagesWeb.Pages.Ion
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!IonExists(Ion.Id))
+                if (!PalletExists(Pallet.Id))
                 {
                     return NotFound();
                 }
@@ -87,9 +65,9 @@ namespace RazorPagesWeb.Pages.Ion
             return RedirectToPage("./Index");
         }
 
-        private bool IonExists(int id)
+        private bool PalletExists(int id)
         {
-            return _context.Ions.Any(e => e.Id == id);
+            return _context.Pallets.Any(e => e.Id == id);
         }
     }
 }

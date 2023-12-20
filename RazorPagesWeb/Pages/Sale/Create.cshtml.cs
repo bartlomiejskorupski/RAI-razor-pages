@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using RazorPagesLibrary.Model;
 using RazorPagesWeb.Data;
 
-namespace RazorPagesWeb.Pages.Ion
+namespace RazorPagesWeb.Pages.Sale
 {
     public class CreateModel : PageModel
     {
@@ -28,25 +25,13 @@ namespace RazorPagesWeb.Pages.Ion
         }
 
         [BindProperty]
-        public RazorPagesLibrary.Model.Ion Ion { get; set; } = default!;
-
-        [BindProperty]
-        [RegularExpression(@"^[0-9]([,\.][0-9]{1,3}([eE][-\+]?[0-9]{1,3})?)?$", ErrorMessage = "Has to be in scientific notation.")]
-        [DisplayName("Content [g/l]")]
-        public string ContentString { get; set; }
+        public RazorPagesLibrary.Model.Sale Sale { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {
-            try
-            {
-                Ion.Content = Double.Parse(ContentString, NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
-            }
-            catch
-            {
-                return Page();
-            }
+            Sale.SaleUnits = new List<RazorPagesLibrary.Model.SaleUnit>();
 
-            _context.Ions.Add(Ion);
+            _context.Sales.Add(Sale);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

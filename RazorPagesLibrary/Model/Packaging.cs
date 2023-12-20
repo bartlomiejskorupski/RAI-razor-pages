@@ -12,7 +12,7 @@ public class Packaging
     [Required]
     public string Type { get; set; } = null!;
     [Required]
-    [Range(0, 50.0, MinimumIsExclusive = true)]
+    [Range(0.01, 50.0, ErrorMessage = "Has to be between 0.01L and 50L")]
     [DisplayName("Capacity [Litres]")]
     public double Capacity { get; set; }
     public ICollection<Water> Waters { get; set; } = null!;
